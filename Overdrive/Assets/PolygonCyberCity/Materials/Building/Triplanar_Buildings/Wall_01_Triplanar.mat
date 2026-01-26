@@ -2,20 +2,28 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Wall_01_Triplanar
   m_Shader: {fileID: 4800000, guid: 62e87ad08a1afa642830420bf8e0dd4d, type: 3}
-  m_ShaderKeywords: _LINKTILINGUSEXONLY_ON _LINKTILING_1USEXONLY_ON _LINKTILING_ON
-  m_LightmapFlags: 0
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _LINKTILINGUSEXONLY_ON
+  - _LINKTILING_1USEXONLY_ON
+  - _LINKTILING_2USEXONLY_ON
+  - _LINKTILING_ON
+  m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -107,11 +115,26 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
+    - _AlphaCutoff: 0.5
     - _DecalTransparency: 1
     - _DecalTransparency_1: 0.43
     - _DecalTransparency_2: 0.604
     - _EmissionAmount: 2
+    - _EnvironmentReflections: 1
     - _GlowThreshold: 0.93
     - _GrungeDecalSwitch: 0
     - _GrungeDecalSwitch1: 0
@@ -124,7 +147,11 @@ Material:
     - _LinkTilinguseXonly: 1
     - _LinkTilinguseXonly1: 1
     - _Metallic: 0
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _ReceiveShadows: 1
     - _Smoothness: 0.2
+    - _SpecularHighlights: 1
     - _TriplanarTiling_1_X: 0.05
     - _TriplanarTiling_1_Y: -0.36
     - _TriplanarTiling_2_X: 0.26
@@ -133,5 +160,7 @@ Material:
     - _TriplanarTiling_Y: -0.36
     - __dirty: 0
     - _glowvalue: 0.93
-    m_Colors: []
+    m_Colors:
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1
