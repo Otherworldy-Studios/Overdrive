@@ -10,7 +10,7 @@ Material:
   m_Name: Hologram_Basic_01_C
   m_Shader: {fileID: 4800000, guid: e9556606a5f42464fa7dd78d624dc180, type: 3}
   m_ShaderKeywords: 
-  m_LightmapFlags: 0
+  m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -37,6 +37,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _Albedo_FlatColourSwitch: 0
+    - _AlphaCutoff: 0.5
     - _Cutoff: 0.5
     - _EmissionMask_FlatColourSwitch: 0
     - _EmissionMask_TintSwitch: 0
@@ -48,5 +49,6 @@ Material:
     - __dirty: 0
     m_Colors:
     - _BaseColour: {r: 0.10617697, g: 1, b: 0, a: 0.6313726}
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _Neon_Colour_01: {r: 0.1544589, g: 0.8396226, b: 0.2952856, a: 0}
   m_BuildTextureStacks: []

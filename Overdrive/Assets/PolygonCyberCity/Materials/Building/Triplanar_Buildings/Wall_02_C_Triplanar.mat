@@ -11,7 +11,7 @@ Material:
   m_Shader: {fileID: 4800000, guid: 62e87ad08a1afa642830420bf8e0dd4d, type: 3}
   m_ShaderKeywords: _GRUNGEDECALSWITCH_2_ON _LINKTILINGUSEXONLY_ON _LINKTILING_1USEXONLY_ON
     _LINKTILING_ON
-  m_LightmapFlags: 0
+  m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -109,6 +109,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _AlphaCutoff: 0.5
     - _DecalTransparency: 1
     - _DecalTransparency_1: 0.43
     - _DecalTransparency_2: 0.541
@@ -134,5 +135,6 @@ Material:
     - _TriplanarTiling_Y: -0.36
     - __dirty: 0
     - _glowvalue: 0.93
-    m_Colors: []
+    m_Colors:
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
