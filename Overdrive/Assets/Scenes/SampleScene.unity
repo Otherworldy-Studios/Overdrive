@@ -325,7 +325,24 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 923613066134090632, guid: 52e97265309586a49aa970e813d39660, type: 3}
+    - {fileID: 6561665280226744093, guid: 52e97265309586a49aa970e813d39660, type: 3}
+    - {fileID: 186566531165209295, guid: 52e97265309586a49aa970e813d39660, type: 3}
+    - {fileID: 1946891302359763140, guid: 52e97265309586a49aa970e813d39660, type: 3}
+    - {fileID: 5145283663977153276, guid: 52e97265309586a49aa970e813d39660, type: 3}
+    - {fileID: 1834099715796282343, guid: 52e97265309586a49aa970e813d39660, type: 3}
+    - {fileID: 6022818023959075995, guid: 52e97265309586a49aa970e813d39660, type: 3}
+    - {fileID: 6508766462930591840, guid: 52e97265309586a49aa970e813d39660, type: 3}
+    - {fileID: 8792777778943013017, guid: 52e97265309586a49aa970e813d39660, type: 3}
+    - {fileID: 7124756117787355211, guid: 52e97265309586a49aa970e813d39660, type: 3}
+    - {fileID: 8479654169060277187, guid: 52e97265309586a49aa970e813d39660, type: 3}
+    - {fileID: 3224763871650664081, guid: 52e97265309586a49aa970e813d39660, type: 3}
+    - {fileID: 7655404168978356056, guid: 52e97265309586a49aa970e813d39660, type: 3}
+    - {fileID: 7447977009832462151, guid: 52e97265309586a49aa970e813d39660, type: 3}
+    - {fileID: 4881937279512485991, guid: 52e97265309586a49aa970e813d39660, type: 3}
+    - {fileID: 5253306269947632005, guid: 52e97265309586a49aa970e813d39660, type: 3}
+    - {fileID: 2122486411774915549, guid: 52e97265309586a49aa970e813d39660, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 7829257235385709006, guid: 52e97265309586a49aa970e813d39660, type: 3}
       insertIndex: -1
@@ -432,7 +449,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.67, z: 0.20499992}
+  m_LocalPosition: {x: 0, y: 1.6700001, z: 0.20499992}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -722,8 +739,13 @@ MonoBehaviour:
   upperYBound: -70
   lowerYBound: 90
   viewBobSpeed: 5
-  amplitude: 1
+  amplitude: 0.2
   frequency: 0.5
+  maxRunSpeed: 8
+  maxSprintSpeed: 15
+  noise: {fileID: 1970379002}
+  IsMoving: 0
+  IsSprinting: 0
 --- !u!114 &859246699
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1028,7 +1050,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NoiseProfile: {fileID: 11400000, guid: 0af787367083d0c4ab0e53dc140d483c, type: 2}
   PivotOffset: {x: 0, y: 0, z: 0}
-  AmplitudeGain: 0.5
+  AmplitudeGain: 2
   FrequencyGain: 1
   m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
