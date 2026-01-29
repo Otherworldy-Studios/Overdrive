@@ -1,5 +1,6 @@
 using System;
 using Synty.AnimationBaseLocomotion.Samples.InputSystem;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -21,29 +22,48 @@ public class PlayerMovement : MonoBehaviour
    [SerializeField]private float viewBobSpeed = 5f;
    [SerializeField]private float amplitude = 0.2f;
    [SerializeField]private float frequency = 0.5f;
+   
+   [SerializeField] private float maxRunSpeed = 8f;
+   [SerializeField] private float maxSprintSpeed = 12f;
 
-   private void Start()
+   private Vector3 _camBaseLocalPos;
+   
+   [SerializeField]private CinemachineBasicMultiChannelPerlin noise;
+   
+   [SerializeField]private bool IsMoving;
+   [SerializeField]private bool IsSprinting;
+
+   private Camera cam;
+
+
+   private void Awake()
    {
-    
+      if (camTarget != null)
+         _camBaseLocalPos = camTarget.transform.localPosition;
+   }
+   private void OnEnable()
+   {
+      inputReader.onSprintActivated += () => speed = maxSprintSpeed;
+      inputReader.onSprintDeactivated += () => speed = maxRunSpeed;
    }
    private void Update()
    {
       Movement();
       Turn();
-      //CameraBounce();
-      anim.SetBool("IsMoving", inputReader._moveComposite.magnitude > 0);
+      CameraBounce();
+      IsMoving = inputReader._moveComposite.magnitude > 0;
+      anim.SetBool("IsMoving", IsMoving);
+      Debug.Log(controller.velocity.magnitude * 0.01f + 0.5f);
    }
 
    private void Movement()
    {
       Vector3 moveDir = transform.forward * inputReader._moveComposite.y + transform.right  * inputReader._moveComposite.x;
-
       controller.Move(moveDir * speed *  Time.deltaTime);
    }
 
    private void Turn()
    {
-      
       float mouseX = inputReader._mouseDelta.x * horizontalMouseSensitivity; 
       transform.Rotate(Vector3.up * mouseX);
       
@@ -56,9 +76,25 @@ public class PlayerMovement : MonoBehaviour
 
    private void CameraBounce()
    {
-      float speed = controller.velocity.magnitude;
-      float sin = amplitude * Mathf.Sin(viewBobSpeed * speed);
-      camTarget.transform.localPosition = Vector3.up * sin;
+      if (IsMoving && speed == maxRunSpeed)
+      {
+         noise.FrequencyGain = maxRunSpeed/2f;
+      }
+      else if (IsMoving && speed == maxSprintSpeed)
+      {
+         noise.FrequencyGain = maxSprintSpeed/2f;
+      }
+      else
+      {
+         noise.FrequencyGain = 1f;
+      }
+   }
+   
+
+   private void OnDisable()
+   {
+      inputReader.onSprintActivated -= () => speed = maxSprintSpeed;
+      inputReader.onSprintDeactivated -= () => speed = maxRunSpeed;
    }
 
 }
