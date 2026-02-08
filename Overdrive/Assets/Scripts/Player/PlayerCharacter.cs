@@ -31,6 +31,8 @@ public class PlayerCharacter : MonoBehaviour , ICharacterController
 
     [Space] [SerializeField] private float airSpeed = 15f; //max speed
     [Space] [SerializeField] private float airAcceleration = 70f; //how fast speed will change
+    [SerializeField] private float coyoteTime = 0.2f; //grace period for jumps after leaving ground
+    
 
     private CharacterState state;
     private CharacterState lastState;
@@ -40,8 +42,13 @@ public class PlayerCharacter : MonoBehaviour , ICharacterController
     private Vector3 requestedMovement;
     private bool requestedJump;
     private bool requestedSustainedJump;
-    private bool requestedSlide;
+   // private bool requestedSlide;
     private bool requestedCrouch;
+    private bool requestedCrouchInAir;
+
+    private float timeSinceUngrounded;
+    private float timeSinceLastJumpRequest;
+    private bool ungroundedDueToJump;
     public void Initialize()
     {
         state.Stance = Stance.Stand;
@@ -57,16 +64,32 @@ public class PlayerCharacter : MonoBehaviour , ICharacterController
         requestedMovement = new Vector3(input.Move.x, 0f,input.Move.y);
         requestedMovement = Vector3.ClampMagnitude(requestedMovement, 1f);
         requestedMovement = input.Rotation * requestedMovement;
-        requestedSustainedJump = input.JumpSustain;
         //become true on jump pressed and stay true if jump was pressed since update input is called multiple
         //times until next physics tick so this keeps it in the queue(jump buffering)
+        bool wasRequestingJump = requestedJump;
         requestedJump = requestedJump || input.Jump;
+
+        if (requestedJump && !wasRequestingJump)
+        {
+            timeSinceLastJumpRequest = 0f;
+        }
+        requestedSustainedJump = input.JumpSustain;
+       
+        bool wasRequestingCrouch = requestedCrouch;
         requestedCrouch = input.Crouch switch
         {
             CrouchInput.Toggle => true,
             CrouchInput.None => false,
             _=> requestedCrouch
         };
+        if (requestedCrouch && !wasRequestingCrouch)
+        {
+            requestedCrouchInAir = !state.Grounded;
+        }
+        else if (!requestedCrouch && wasRequestingCrouch)
+        {
+            requestedCrouchInAir = false;
+        }
     }
     
     public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
@@ -74,6 +97,8 @@ public class PlayerCharacter : MonoBehaviour , ICharacterController
        
         if (motor.GroundingStatus.IsStableOnGround)
         {
+            timeSinceUngrounded = 0f;
+            ungroundedDueToJump = false;
             //snap to movement dir of angle that player is walking on
             Vector3 groundedMovement = motor.GetDirectionTangentToSurface
             (
@@ -93,15 +118,32 @@ public class PlayerCharacter : MonoBehaviour , ICharacterController
                 {
                     state.Stance = Stance.Slide;
                     
-                    var slideSpeed = Mathf.Max(slideStartSpeed, currentVelocity.magnitude); //if player is moving faster than slideStartSpeed then preserve previous velocity
+                    //when landin on stable ground character motor projects the velocity onto a flat ground plane
+                    //See: KinematicCharacterMotor.HandleVelocityProjection()
+                    //This is normally food, because under  normal circumstances the player shouldn't slide when landing on the ground
+                    //in this case since we want the player to slide we can reproject the last frames (falling) velocity onto the ground normal to slide
+                    if (wasInAir)
+                    {
+                        currentVelocity = Vector3.ProjectOnPlane
+                        (
+                            lastState.Velocity,
+                            motor.GroundingStatus.GroundNormal
+                        );
+                    }
+
+                    float effectiveSlideStartSpeed = slideStartSpeed;
+                    if (!lastState.Grounded && !requestedCrouchInAir)
+                    {
+                        effectiveSlideStartSpeed = 0f;
+                        requestedCrouchInAir = false;
+                    }
+                    float slideSpeed = Mathf.Max(slideStartSpeed, currentVelocity.magnitude); //if player is moving faster than slideStartSpeed then preserve previous velocity
                     currentVelocity = motor.GetDirectionTangentToSurface(direction: currentVelocity, surfaceNormal: motor.GroundingStatus.GroundNormal) * slideSpeed;
                    
                 }
 
                
             }
-            
-            
             
             
             if(state.Stance is Stance.Stand or  Stance.Crouch)
@@ -141,27 +183,62 @@ public class PlayerCharacter : MonoBehaviour , ICharacterController
         }
         else //in the air
         {
+            timeSinceUngrounded += deltaTime;
             //In air move
             if (requestedMovement.sqrMagnitude > 0.0001f)
             {
                 //requested movement projected onto movement plane (magnitude preserved)
-                var planarMovement = Vector3.ProjectOnPlane(requestedMovement, motor.CharacterUp) * requestedMovement.magnitude;
+                Vector3 planarMovement = Vector3.ProjectOnPlane(requestedMovement, motor.CharacterUp) * requestedMovement.magnitude;
                 planarMovement = Vector3.ClampMagnitude(planarMovement, 1f);
                 
                 //current velocity on movement plane 
-                var currentPlanarVelocity = Vector3.ProjectOnPlane(currentVelocity, motor.CharacterUp);
+                Vector3 currentPlanarVelocity = Vector3.ProjectOnPlane(currentVelocity, motor.CharacterUp);
                 
-                //calculate movement force 
-                var movementForce = planarMovement * airAcceleration * deltaTime;
+                //calculate movement force //changed depending on current velocity
+                Vector3 movementForce = planarMovement * airAcceleration * deltaTime;
                 
-                //Add it to the current planar velocity for a target velocity
-                var targetPlanarVelocity = currentPlanarVelocity + movementForce;
+                //if moving slower than the max air speed, movement force is for steering
+                if (currentPlanarVelocity.magnitude < airSpeed)
+                {
+                    Vector3 targetPlanarVelocity = currentPlanarVelocity + movementForce;
                 
-                //limit target velocity to airSpeed
-                targetPlanarVelocity = Vector3.ClampMagnitude(targetPlanarVelocity, airSpeed);
+                    //limit target velocity to airSpeed
+                    targetPlanarVelocity = Vector3.ClampMagnitude(targetPlanarVelocity, airSpeed);
+                    
+                    //steer towards target velocity
+                    movementForce = targetPlanarVelocity - currentPlanarVelocity;
+                }
+                //else nerf the movement force when it is in the direction of the current planar velocity
+                //to prevent the player from accelerating further past max air speed
+                else if (Vector3.Dot(currentPlanarVelocity, movementForce) > 0f)
+                {
+                    Vector3 constrainedMovementForce = Vector3.ProjectOnPlane(movementForce, currentPlanarVelocity.normalized);
+                    movementForce = constrainedMovementForce;
+                }
+                
+              //prevent air climbing steep slopes //found any ground is also true for any steep ground
+              if (motor.GroundingStatus.FoundAnyGround)
+              {
+                  //if moving in direction as the resulting velocity(direction they are already moving in)
+                  if (Vector3.Dot(movementForce, currentVelocity + movementForce) > 0f)
+                  {
+                      Vector3 perpendicularObstructionNormal = Vector3.Cross
+                          (
+                              motor.CharacterUp,
+                              Vector3.Cross
+                              (
+                                  motor.CharacterUp, 
+                                  motor.GroundingStatus.GroundNormal
+                              )
+                          ).normalized;
+                      //project movement force onto obstruction plane
+                      movementForce = Vector3.ProjectOnPlane(movementForce, perpendicularObstructionNormal);
+                  }
+              }
+               
                 
                 //steer towards curremt velocity.
-                currentVelocity += targetPlanarVelocity - currentPlanarVelocity;
+                currentVelocity += movementForce;
                 
             }
             float effectiveGravity = gravity;
@@ -175,16 +252,32 @@ public class PlayerCharacter : MonoBehaviour , ICharacterController
             currentVelocity += motor.CharacterUp * effectiveGravity * deltaTime;
         }
 
-        if (requestedJump && motor.GroundingStatus.IsStableOnGround)
+        if (requestedJump)
         {
-            requestedJump = false;
-            requestedSlide = false; //TODO might change this later right now if the player jumps while sliding they stop sliding
-            motor.ForceUnground(0.1f);
+            bool grounded = motor.GroundingStatus.IsStableOnGround;
+            bool canCoyoteJump = timeSinceUngrounded < coyoteTime && !ungroundedDueToJump;
+            if (grounded || canCoyoteJump)
+            {
+                requestedJump = false;
+                requestedCrouch = false; //TODO might change this later right now if the player jumps while sliding they stop sliding
+                requestedCrouchInAir = false;
+                motor.ForceUnground(0.1f);
+                ungroundedDueToJump = true;
             
-            //set minimum vertical speed to jump speed, so if pressing jump while falling you dont just fall slower
-            float currentVerticalSpeed = Vector3.Dot(currentVelocity, motor.CharacterUp);
-            float targetVerticalSpeed = Mathf.Max(currentVerticalSpeed, jumpSpeed);
-            currentVelocity += motor.CharacterUp * (targetVerticalSpeed - currentVerticalSpeed);
+                //set minimum vertical speed to jump speed, so if pressing jump while falling you dont just fall slower
+                float currentVerticalSpeed = Vector3.Dot(currentVelocity, motor.CharacterUp);
+                float targetVerticalSpeed = Mathf.Max(currentVerticalSpeed, jumpSpeed);
+                currentVelocity += motor.CharacterUp * (targetVerticalSpeed - currentVerticalSpeed);
+            }
+            else
+            {
+                //queue jump // will defer jump until coyote time has passed
+                timeSinceLastJumpRequest += deltaTime;
+                bool canJumpLater = timeSinceLastJumpRequest < coyoteTime;
+                
+                requestedJump = canJumpLater;
+            }
+           
         }
         
     }
@@ -226,6 +319,7 @@ public class PlayerCharacter : MonoBehaviour , ICharacterController
             //if going to implement crouch change dimensions would be here for now "Crouch" is just a walk
         }
         state.Grounded = motor.GroundingStatus.IsStableOnGround;
+        state.Velocity = motor.Velocity;
         lastState = tempState;
     }
 
@@ -291,4 +385,5 @@ public struct CharacterState
 {
     public bool Grounded;
     public Stance Stance;
+    public Vector3 Velocity;
 }

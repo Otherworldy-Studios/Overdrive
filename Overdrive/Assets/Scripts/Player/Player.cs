@@ -1,3 +1,4 @@
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,7 +7,8 @@ public class Player : MonoBehaviour
    
     [SerializeField]private PlayerCharacter playerCharacter;
     [SerializeField] private PlayerCamera playerCamera;
-    
+    [Space]
+    [SerializeField] private CameraSpring cameraSpring;
     private InputSystem_Actions inputActions;
     void Start()
     {
@@ -15,6 +17,7 @@ public class Player : MonoBehaviour
         
         playerCharacter.Initialize();
         playerCamera.Initialize(playerCharacter.GetCameraTarget());
+        cameraSpring.Initialize();
         
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -58,7 +61,10 @@ public class Player : MonoBehaviour
 
     void LateUpdate()
     {
-        playerCamera.UpdatePosition(playerCharacter.GetCameraTarget());
+        float deltaTime = Time.deltaTime;
+        Transform cameraTarget = playerCharacter.GetCameraTarget();
+        playerCamera.UpdatePosition(cameraTarget);
+        cameraSpring.UpdateSpring(deltaTime, cameraTarget.up);
     }
 
     public void Teleport(Vector3 position)
