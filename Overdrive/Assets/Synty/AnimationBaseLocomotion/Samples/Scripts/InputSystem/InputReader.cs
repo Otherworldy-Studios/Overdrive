@@ -151,6 +151,11 @@ namespace Synty.AnimationBaseLocomotion.Samples.InputSystem
             }
         }
 
+        public void OnSlide(InputAction.CallbackContext context)
+        {
+            
+        }
+
         /// <summary>
         ///     Defines the action to perform when the OnLockOn callback is called.
         /// </summary>
