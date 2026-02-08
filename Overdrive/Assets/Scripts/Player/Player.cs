@@ -1,6 +1,7 @@
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 
 public class Player : MonoBehaviour
 {
@@ -9,6 +10,9 @@ public class Player : MonoBehaviour
     [SerializeField] private PlayerCamera playerCamera;
     [Space]
     [SerializeField] private CameraSpring cameraSpring;
+    [SerializeField] private CameraLean cameraLean;
+    [SerializeField] private Volume volume;
+    [SerializeField] private StanceVignette stanceVignette;
     private InputSystem_Actions inputActions;
     void Start()
     {
@@ -18,6 +22,8 @@ public class Player : MonoBehaviour
         playerCharacter.Initialize();
         playerCamera.Initialize(playerCharacter.GetCameraTarget());
         cameraSpring.Initialize();
+        cameraLean.Initialize();
+        stanceVignette.Initialize(volume.profile);
         
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -63,8 +69,13 @@ public class Player : MonoBehaviour
     {
         float deltaTime = Time.deltaTime;
         Transform cameraTarget = playerCharacter.GetCameraTarget();
+        CharacterState state = playerCharacter.GetState();
+        
         playerCamera.UpdatePosition(cameraTarget);
         cameraSpring.UpdateSpring(deltaTime, cameraTarget.up);
+        cameraLean.UpdateLean(deltaTime,state.Stance == Stance.Slide, state.Acceleration ,cameraTarget.up);
+        
+        stanceVignette.UpdateVignette(deltaTime, state.Stance);
     }
 
     public void Teleport(Vector3 position)

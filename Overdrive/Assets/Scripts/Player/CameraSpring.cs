@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class CameraSpring : MonoBehaviour
 {
-    private bool springEnabled;
+    [SerializeField]private bool springEnabled;
 
     private Vector3 springPosition;
     private Vector3 springVelocity;
@@ -21,6 +21,7 @@ public class CameraSpring : MonoBehaviour
 
     public void UpdateSpring(float deltaTime, Vector3 up)
     {
+        if(!springEnabled) return;
         transform.localPosition = Vector3.zero;
         Spring(ref springPosition, ref springVelocity, transform.position, springHalfLife, springFrequency, deltaTime);
         

@@ -57,6 +57,8 @@ public class PlayerCharacter : MonoBehaviour , ICharacterController
     }
     
     public Transform GetCameraTarget() => cameraTarget;
+    public CharacterState GetState() => state;
+    public CharacterState GetLastState() => lastState;
     
     public void UpdateInput(CharacterInput input)
     {
@@ -94,7 +96,7 @@ public class PlayerCharacter : MonoBehaviour , ICharacterController
     
     public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
     {
-       
+       state.Acceleration = Vector3.zero;
         if (motor.GroundingStatus.IsStableOnGround)
         {
             timeSinceUngrounded = 0f;
@@ -151,27 +153,35 @@ public class PlayerCharacter : MonoBehaviour , ICharacterController
                 float speed = state.Stance is Stance.Stand ? walkSpeed : crouchSpeed;
                 float response = state.Stance is Stance.Stand ? walkResponse : crouchResponse;
                 Vector3 targetVelocity = groundedMovement * speed;
-                currentVelocity = Vector3.Lerp(currentVelocity, targetVelocity, 
+                Vector3 moveVelocity = Vector3.Lerp(currentVelocity, targetVelocity, 
                     1f - Mathf.Exp(-response * deltaTime));
+                state.Acceleration = (moveVelocity - currentVelocity) / deltaTime;
+                currentVelocity = moveVelocity;
             }
             else
             {
                 //Friction
                 currentVelocity -= currentVelocity * (slideFriction * deltaTime);
-                
+               
+                //slope 
+                Vector3 force = Vector3.ProjectOnPlane(-motor.CharacterUp, motor.GroundingStatus.GroundNormal) * slideGravity;
+                currentVelocity -= force * deltaTime;
+               
                 //Steer
                 //target velocity is the player's movement direction at the current speed
                 float currentSpeed = currentVelocity.magnitude; //speed before steer force is applied
                 Vector3 targetVelocity = groundedMovement * currentSpeed;
-                Vector3 steerForce = (targetVelocity - currentVelocity) * slideSteerAcceleration * deltaTime;
+                Vector3 steerVelocity = currentVelocity;
+                Vector3 steerForce = (targetVelocity - steerVelocity) * slideSteerAcceleration * deltaTime;
                 
-                //slope 
-                Vector3 force = Vector3.ProjectOnPlane(-motor.CharacterUp, motor.GroundingStatus.GroundNormal) * slideGravity;
-                currentVelocity -= force * deltaTime;
+               
                 
                 //add steer force but clamp speed as to not accelerate because of movement input
-                currentVelocity += steerForce;
-                currentVelocity = Vector3.ClampMagnitude(currentVelocity, currentSpeed);
+                steerVelocity += steerForce;
+                steerVelocity = Vector3.ClampMagnitude( steerVelocity, currentSpeed);
+                
+                state.Acceleration = (steerVelocity - currentVelocity) / deltaTime;
+                currentVelocity = steerVelocity;
                 
                 //change back to walking if sliding too slowly
                 if (currentVelocity.magnitude < slideEndSpeed)
@@ -386,4 +396,5 @@ public struct CharacterState
     public bool Grounded;
     public Stance Stance;
     public Vector3 Velocity;
+    public Vector3 Acceleration;
 }
