@@ -61,7 +61,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Crouch",
+                    "name": "Slide",
                     "type": "Button",
                     "id": "0a2dd0bc-e6ed-4515-b034-169169050ceb",
                     "expectedControlType": "",
@@ -318,7 +318,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard and Mouse",
-                    "action": "Crouch",
+                    "action": "Slide",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -329,7 +329,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Crouch",
+                    "action": "Slide",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
