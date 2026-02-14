@@ -76,3 +76,6 @@ crashlytics-build.properties
 /Overdrive/Library
 /Overdrive/UserSettings
 /Overdrive/Temp
+/Overdrive/obj
+/Overdrive/obj
+*.cache
