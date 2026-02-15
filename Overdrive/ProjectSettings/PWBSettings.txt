@@ -1,5 +1,5 @@
 {
-    "_dataDir": "Assets/PluginMaster/DesignTools/Editor/PrefabWorldBuilder/Resources/Data",
+    "_dataDir": "Assets/UnityStoreAssets/PluginMaster/DesignTools/Editor/PrefabWorldBuilder/Resources/Data",
     "_shortcutProfiles": [
         {
             "_profileName": "Default 1",
