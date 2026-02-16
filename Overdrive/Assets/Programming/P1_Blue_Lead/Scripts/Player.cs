@@ -24,8 +24,7 @@ public class Player : MonoBehaviour
         cameraLean.Initialize();
         stanceVignette.Initialize(volume.profile);
         
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        
     }
 
     void OnDestroy()

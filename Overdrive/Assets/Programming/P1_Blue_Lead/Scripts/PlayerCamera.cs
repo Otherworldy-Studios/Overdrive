@@ -8,6 +8,8 @@ public class PlayerCamera : MonoBehaviour
     {
        transform.position = target.position;
        transform.eulerAngles = eulerAngles = target.eulerAngles;
+       Cursor.lockState = CursorLockMode.Locked;
+       Cursor.visible = false;
     }
 
     public void UpdateRotation(CameraInput input)
