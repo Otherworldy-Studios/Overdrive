@@ -2,11 +2,13 @@ using UnityEngine;
 
 public class WeaponBase
 {
-    private string Name;
-    private bool IsMelee;
-    private float Range;
-    private float Damage;
-    private float Cooldown;
-    private float MagSize;
-    private float MaxCombo;
+    public string Name;
+    public bool IsMelee;
+    public float Range;
+    public int PrimaryDamage;
+    public int SecondaryDamage;
+    public float PrimaryCooldown;
+    public float SecondaryCooldown;
+    public float MaxCombo;
+    public float MagSize;
 }
