@@ -9,18 +9,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 465de997038804132b2173d2981f0a45, type: 3}
+  m_Script: {fileID: 11500000, guid: 87dad644dba33444ab3daaa7140fd717, type: 3}
   m_Name: SO_StatBlock_Player
-  m_EditorClassIdentifier: Assembly-CSharp::StatBlock_Player
-  maxHealth: {fileID: 11400000, guid: 0134174deb56c4e9eb8bc9bee5e65758, type: 2}
-  currentHealth: {fileID: 11400000, guid: f0c63183b7a7e409d9d6299e13fe3c60, type: 2}
-  moveSpeedMultiplier: {fileID: 11400000, guid: 2064c2a3198d949c8ad2e2e5f627e451, type: 2}
-  damageMultiplier: {fileID: 11400000, guid: 4b1d8593e6ed445cc919347f6decd32c, type: 2}
-  damageReduction: {fileID: 11400000, guid: 69463661c890e4087b996ec045cd0b09, type: 2}
-  critChance: {fileID: 11400000, guid: df7a937d6603343899a3ec882065d1ed, type: 2}
-  critDamage: {fileID: 11400000, guid: 8b563e9413dc04e5d8b0a91213ca2396, type: 2}
-  dashCharges: {fileID: 11400000, guid: 605c8c5be4ce0416eb8617d92d77dd3b, type: 2}
-  dashCooldown: {fileID: 11400000, guid: 916e6a1e920844632b4b4d9436be398e, type: 2}
-  reloadSpeedMultiplier: {fileID: 11400000, guid: 93367ddef91454afa8dccca9f21c5121, type: 2}
-  ultDamageMultiplier: {fileID: 11400000, guid: c0eeadd796e834b78acd797a410808bc, type: 2}
-  ultChargeRate: {fileID: 11400000, guid: f86310dcbc4404c6e98bcf709eabfefb, type: 2}
+  m_EditorClassIdentifier: Assembly-CSharp::StatBlock
+  stats:
+  - {fileID: 11400000, guid: 0134174deb56c4e9eb8bc9bee5e65758, type: 2}
+  - {fileID: 11400000, guid: f0c63183b7a7e409d9d6299e13fe3c60, type: 2}
+  - {fileID: 11400000, guid: 2064c2a3198d949c8ad2e2e5f627e451, type: 2}
+  - {fileID: 11400000, guid: 4b1d8593e6ed445cc919347f6decd32c, type: 2}
+  - {fileID: 11400000, guid: 69463661c890e4087b996ec045cd0b09, type: 2}
+  - {fileID: 11400000, guid: df7a937d6603343899a3ec882065d1ed, type: 2}
+  - {fileID: 11400000, guid: 8b563e9413dc04e5d8b0a91213ca2396, type: 2}
+  - {fileID: 11400000, guid: 605c8c5be4ce0416eb8617d92d77dd3b, type: 2}
+  - {fileID: 11400000, guid: 916e6a1e920844632b4b4d9436be398e, type: 2}
+  - {fileID: 11400000, guid: 93367ddef91454afa8dccca9f21c5121, type: 2}
+  - {fileID: 11400000, guid: c0eeadd796e834b78acd797a410808bc, type: 2}
+  - {fileID: 11400000, guid: f86310dcbc4404c6e98bcf709eabfefb, type: 2}

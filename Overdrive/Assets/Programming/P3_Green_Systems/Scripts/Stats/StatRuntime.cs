@@ -1,9 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StatRuntime : MonoBehaviour
+public class StatRuntime
 {
-    private float currentValue;
+    private string id;
+
+    private string name;
+    
+    private float baseValue;
     
     private float hardCap;
     
@@ -11,37 +15,26 @@ public class StatRuntime : MonoBehaviour
     
     private List<StatModifier> modifiers;
 
-    public StatRuntime(Stat statSO)
-    {
-        this.statSO = statSO;
-
-        currentValue = statSO.getBaseValue();
-        hardCap = statSO.getHardCap();
-    }
-    
-    private void OnEnable()
+    public StatRuntime(Stat statSO, float customHardCap = 0)
     {
         modifiers = new List<StatModifier>();
-    }
-    
-    public void AddModifier(StatModifier modifier)
-    {
-        modifiers.Add(modifier);
+        
+        this.statSO = statSO;
+
+        id = statSO.getStatID();
+        name = statSO.getStatName();
+        baseValue = statSO.getBaseValue();
+        hardCap = statSO.getHardCap();
     }
 
-    public void RemoveModifier(StatModifier modifier)
+    public string GetStatID()
     {
-        modifiers.Remove(modifier);
+        return id;
     }
 
-    public void ClearModifiers()
+    public float GetStatValue(float maxHealth)
     {
-        modifiers.Clear();
-    }
-
-    public float GetStatValue()
-    {
-        float finalValue = currentValue;
+        float finalValue = baseValue;
 
         foreach (StatModifier modifier in modifiers)
         {
@@ -59,10 +52,26 @@ public class StatRuntime : MonoBehaviour
         if (hardCap > 0)
         {
             finalValue = Mathf.Min(finalValue, hardCap);
+        } else if (id == "current_health")
+        {
+            finalValue = Mathf.Min(finalValue, maxHealth);
         }
 
-        currentValue = finalValue;
-
         return finalValue;
+    }
+    
+    public void AddModifier(StatModifier modifier)
+    {
+        modifiers.Add(modifier);
+    }
+
+    public void RemoveModifier(StatModifier modifier)
+    {
+        modifiers.Remove(modifier);
+    }
+
+    public void ClearModifiers()
+    {
+        modifiers.Clear();
     }
 }

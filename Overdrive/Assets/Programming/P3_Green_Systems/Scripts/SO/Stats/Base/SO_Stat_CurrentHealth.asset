@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 457ee9c2889fa408abad78fdc040f8a4, type: 3}
   m_Name: SO_Stat_CurrentHealth
   m_EditorClassIdentifier: Assembly-CSharp::Stat
+  statID: current_health
   statName: Current Health
   baseValue: 100
   hardCap: 0
-  modifiers: []

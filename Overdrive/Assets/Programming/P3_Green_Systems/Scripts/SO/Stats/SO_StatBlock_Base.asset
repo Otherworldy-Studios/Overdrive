@@ -9,11 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f046c7609838d478dac2641fd10b418b, type: 3}
+  m_Script: {fileID: 11500000, guid: 87dad644dba33444ab3daaa7140fd717, type: 3}
   m_Name: SO_StatBlock_Base
-  m_EditorClassIdentifier: Assembly-CSharp::StatBlock_Base
-  maxHealth: {fileID: 11400000, guid: 0134174deb56c4e9eb8bc9bee5e65758, type: 2}
-  currentHealth: {fileID: 11400000, guid: f0c63183b7a7e409d9d6299e13fe3c60, type: 2}
-  moveSpeedMultiplier: {fileID: 11400000, guid: 2064c2a3198d949c8ad2e2e5f627e451, type: 2}
-  damageMultiplier: {fileID: 11400000, guid: 4b1d8593e6ed445cc919347f6decd32c, type: 2}
-  damageReduction: {fileID: 11400000, guid: 69463661c890e4087b996ec045cd0b09, type: 2}
+  m_EditorClassIdentifier: Assembly-CSharp::StatBlock
+  stats:
+  - {fileID: 11400000, guid: 0134174deb56c4e9eb8bc9bee5e65758, type: 2}
+  - {fileID: 11400000, guid: f0c63183b7a7e409d9d6299e13fe3c60, type: 2}
+  - {fileID: 11400000, guid: 2064c2a3198d949c8ad2e2e5f627e451, type: 2}
+  - {fileID: 11400000, guid: 4b1d8593e6ed445cc919347f6decd32c, type: 2}
+  - {fileID: 11400000, guid: 69463661c890e4087b996ec045cd0b09, type: 2}

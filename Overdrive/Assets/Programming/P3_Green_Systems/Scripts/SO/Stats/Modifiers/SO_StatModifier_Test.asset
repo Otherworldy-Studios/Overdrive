@@ -9,10 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 457ee9c2889fa408abad78fdc040f8a4, type: 3}
-  m_Name: SO_Stat_DashCharges
-  m_EditorClassIdentifier: Assembly-CSharp::Stat
-  statID: dash_charges
-  statName: Dash Charges
-  baseValue: 2
-  hardCap: 4
+  m_Script: {fileID: 11500000, guid: c7ff680b5e7b74408b6f32805baa0b5b, type: 3}
+  m_Name: SO_StatModifier_Test
+  m_EditorClassIdentifier: Assembly-CSharp::StatModifier
+  modifierType: 0
+  value: -17
