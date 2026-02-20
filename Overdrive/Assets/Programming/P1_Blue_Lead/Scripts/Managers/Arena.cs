@@ -31,3 +31,10 @@ public class Arena : MonoBehaviour
         }
     }
 }
+
+public enum ArenaType 
+{
+    CombatArena,
+    TerminalArena,
+    BossArena
+}
