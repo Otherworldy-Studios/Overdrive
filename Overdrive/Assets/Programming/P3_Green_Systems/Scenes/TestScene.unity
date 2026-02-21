@@ -197,7 +197,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StatBlockRuntime
   statBlock: {fileID: 11400000, guid: c0826014f745647a0936d28c76930371, type: 2}
-  testModifier: {fileID: 11400000, guid: 4ed184f3256264371a6ecf3a3f8c2ced, type: 2}
 --- !u!1 &1584539742
 GameObject:
   m_ObjectHideFlags: 0

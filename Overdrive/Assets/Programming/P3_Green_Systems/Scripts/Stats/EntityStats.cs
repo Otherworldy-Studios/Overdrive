@@ -1,27 +1,35 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StatBlockRuntime : MonoBehaviour
+public class EntityStats : MonoBehaviour
 {
+    public event Action<GameObject> OnDeath;
+    
     [SerializeField] private StatBlock statBlock;
     
     private Dictionary<string, StatRuntime> stats;
 
-    // For Debug Purposes
-    [SerializeField] private StatModifier testModifier;
-    
     private void Start()
     {
         Initialize();
         
-        // For Debug Purposes
-        Debug.Log("Current Health: " + GetStatValue("current_health"));
+        StatRuntime currentHealth = GetStat("current_health");
+        
+        if (currentHealth != null)
+        {
+            currentHealth.OnValueChanged += OnHealthChanged;
+        }
+    }
 
-        StatRuntime currentHealthStat = GetStat("current_health");
+    private void OnDestroy()
+    {
+        StatRuntime currentHealth = GetStat("current_health");
         
-        currentHealthStat.AddModifier(testModifier);
-        
-        Debug.Log("Current Health: " + GetStatValue("current_health"));
+        if (currentHealth != null)
+        {
+            currentHealth.OnValueChanged -= OnHealthChanged;
+        }
     }
 
     public void Initialize()
@@ -61,9 +69,31 @@ public class StatBlockRuntime : MonoBehaviour
         
         if (stat != null)
         {
-            return stat.GetStatValue(maxHealth);
+            return stat.Recalculate(maxHealth);
         }
 
         return 0;
+    }
+
+    public void AddModifierToStat(string statID, StatModifier modifier)
+    {
+        float maxHealth = 0;
+
+        if (statID == "current_health")
+        {
+            maxHealth = GetStatValue("max_health");
+        }
+        
+        StatRuntime stat = GetStat(statID);
+
+        stat?.AddModifier(modifier, maxHealth);
+    }
+
+    private void OnHealthChanged(float oldValue, float newValue)
+    {
+        if (oldValue > 0 && newValue <= 0)
+        {
+            OnDeath?.Invoke(gameObject);
+        }
     }
 }
