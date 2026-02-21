@@ -5,10 +5,13 @@ using UnityEngine;
 public class Arena : MonoBehaviour
 {
     [SerializeField] int arenaNum;
-    [SerializeField] private int arenaName;
+    [SerializeField] private string arenaName;
     [SerializeField] private bool cleared;
     [SerializeField] private List<GameObject> enemies;
-    public event Action<int> ArenaCleared;
+    [SerializeField] private ArenaType arenaType;
+    [SerializeField] private RewardsPacket rewards;
+    [SerializeField] private Door door;
+    public event Action<int> OnArenaCleared;
     private event Action<GameObject> OnEnemyDeathPlaceHolder;
 
     private void OnEnable()
@@ -23,12 +26,26 @@ public class Arena : MonoBehaviour
     {
         if(enemies.Contains(deadEnemy))
         {
+            //enemy.OnDeath -= UpdateEnemyCount
             enemies.Remove(deadEnemy);
         }
         if(enemies.Count == 0)
         {
-            ArenaCleared?.Invoke(arenaNum);
+            ClearArena();
         }
+    }
+
+    private void ClearArena()
+    {
+        cleared = true;
+        OnArenaCleared?.Invoke(arenaNum);
+        rewards?.GiveRewards();
+        door.UnlockDoor();
+    }
+
+    private void OnDisable()
+    {
+        OnEnemyDeathPlaceHolder -= UpdateEnemyCount;
     }
 }
 
